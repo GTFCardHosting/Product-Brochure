@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Graciana Trifold</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+
+    :root {
+      --bg-main: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+      --panel-glass: rgba(255, 255, 255, 0.15);
+      --text-light: #ffffff;
+      --accent: #ffb285;
+      --accent-gradient: linear-gradient(to bottom right, #ffe0c2, #ffb285, #F06F24);
+      --radius: 20px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-light);
+      overflow-x: hidden;
+      touch-action: pan-y;
+    }
+
+    .carousel-container {
+      overflow: hidden;
+      width: 100vw;
+    }
+
+    .wrapper {
+      display: flex;
+      height: 100vh;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .panel {	
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--panel-glass);
+      backdrop-filter: blur(0px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      color: var(--text-light);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+
+      flex: 0 0 100vw;
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .panel-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.25));
+    }
+
+    .panel-content {
+      overflow-y: auto;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      padding-bottom: 3.5rem;
+      margin-top: 0;
+      box-sizing: border-box;
+    
+
+     scrollbar-width: thin;
+       scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+     }
+
+     .panel-content::-webkit-scrollbar {
+       width: 8px;
+     }
+
+     .panel-content::-webkit-scrollbar-thumb {
+       background-color: rgba(255, 255, 255, 0.3);
+       border-radius: 4px;
+     }
+
+     .panel-content::-webkit-scrollbar-track {
+       background: transparent;
+     }
+
+   .panel-scroll-wrapper {
+     position: relative;
+     height: 100%;
+     overflow: hidden;
+    }
+
+   .panel-fade {
+     content: "";
+     position: absolute;
+     bottom: 0;
+     left: 0;
+     right: 0;
+     height: 3rem;
+     background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(0,0,0,0.4));
+     z-index: 2;
+     pointer-events: none;
+    }
+
+    .panel-logo {
+     width: 75%;
+     height: auto;
+     display: block;
+     margin: 0 auto;
+     opacity: 0.7;
+    }
+
+    .social-links {
+     margin-top: 0rem;
+     text-align: center;
+     padding-bottom: 0rem;
+    }
+
+   .social-links a {
+     color: var(--accent);
+     text-decoration: none;
+     font-weight: 500;
+     transition: color 0.2s ease;
+    }
+
+    .social-links a:hover {
+     color: #fff;
+     text-decoration: none;
+    }
+
+   h2 {
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+    font-size: 3.6rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;	
+    filter: drop-shadow(1px 1px 0px rgba(30, 10, 0, 0.66))
+    drop-shadow(10px 10px 3px rgba(0, 0, 0, 0.63));
+}
+
+
+    h3 {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: #ffebd6;
+      filter: drop-shadow(1px 1px 0px rgba(30, 10, 0, 0.5))
+      drop-shadow(5px 5px 3px rgba(0, 0, 0, 0.53));
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      list-style: disc;
+      line-height: 1.6;
+      filter: drop-shadow(1px 1px 0px rgba(30, 10, 0, 0.5))
+      drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.63));
+    }
+
+    li, p {
+      color: #f5f5f5;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    .nav-buttons {
+      position: fixed;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .nav-buttons button {
+      all: unset;
+      pointer-events: auto;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(5px);
+      border-radius: 50%;
+      padding: 0.2rem 0.6rem;
+      cursor: pointer;
+      transition: transform 0.3s ease, color 0.3s ease, backdrop-filter 0.3s ease;
+    }
+
+    .nav-buttons button:hover {
+      transform: scale(1.3);
+      color: var(--accent);
+      backdrop-filter: blur(10px);
+    }
+
+     .locations {
+       display: flex;
+       flex-direction: row;
+       justify-content: space-around;
+       flex-wrap: wrap;
+       background: rgba(255, 255, 240, 0.5);
+       filter: drop-shadow(15px 25px 20px black);
+       padding: 2rem;
+       border-radius: 10px;
+       max-width: 90vw;
+       margin: auto;
+       box-sizing: border-box;
+     }
+
+     .location-card {
+       flex: 1 1 300px;
+       max-width: 400px;
+       text-align: center;
+       color: black;
+       padding: 1rem;
+       box-sizing: border-box;
+     }
+
+     .location-card h1,
+     .location-card h3 {
+       color: #ff821c;
+       filter: drop-shadow(2px 3px 1px brown);
+       font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+       margin-bottom: 0.5rem;
+     }
+
+     .location-card p {
+       color: black;
+       font-size: clamp(0.875rem, 1.8vw, 1.1rem);
+     }
+
+    @media (min-width: 1024px) {
+    .panel {
+      flex: 0 0 33.333vw;
+      width: 33.333vw;
+      }
+      }
+
+      .locations {
+        flex-wrap: nowrap;
+      }
+
+      .location-card {
+        flex: 0 0 auto;
+      }
+
+   a {
+     color: var(--accent);
+     text-decoration: none;
+     font-weight: 500;
+     filter: drop-shadow(1px 1px 0px rgba(30, 10, 0, 0.25));
+     transition: color 0.2s ease;
+     }
+
+    a:hover {
+      text-decoration: none;
+      color: #fff;
+     }
+
+  
+    .location-card a {
+      color: black;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .location-card a:hover {
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="carousel-container">
+  <div class="wrapper" id="brochureWrapper">
+    <div class="panel">Loading...</div>
+  </div>
+</div>
+
+<div class="nav-buttons">
+  <button onclick="scrollToPrevious()" aria-label="Previous">
+    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+    </svg>
+  </button>
+  <button onclick="scrollToNext()" aria-label="Next">
+    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+const originalPanels = [
+{
+  title: "",
+  background: "url('https://i.postimg.cc/QNJgyhCb/Brochure-HTML-Panel-Page-1.png') center/cover no-repeat",
+  content: `
+    <img src="https://files.catbox.moe/rr608r.png" alt="Graciana Tortilla Logo" class="panel-logo" />
+     <div class="social-links">
+      <p>
+<br/>
+      <br/>
+        <a href="https://www.facebook.com/GracianaTortillaFactory" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+            <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.13 8.44 9.88v-6.99H7.9v-2.89h2.54V9.41c0-2.51 1.5-3.89 3.79-3.89 1.1 0 2.25.2 2.25.2v2.47h-1.27c-1.25 0-1.64.78-1.64 1.57v1.88h2.79l-.45 2.89h-2.34V22C18.34 21.13 22 16.99 22 12z"/>
+          </svg>
+          GracianaTortillaFactory
+        </a>
+<br/>
+      <br/>
+        <a href="https://www.instagram.com/GracianaTortillaFactory" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.75-.88a1.13 1.13 0 1 1 0 2.25 1.13 1.13 0 0 1 0-2.25z"/>
+          </svg>
+          GracianaTortillaFactory
+        </a>
+<br/>
+      <br/>
+       <a href="https://www.gracianatortillafactory.com" target="_blank">
+         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm6.93 6h-3.02a12.44 12.44 0 0 0-1.4-3.64A8.03 8.03 0 0 1 18.93 8zM12 4c.7.9 1.34 2.12 1.73 4H10.27c.39-1.88 1.03-3.1 1.73-4zM8.49 4.36A12.44 12.44 0 0 0 7.09 8H4.07a8.03 8.03 0 0 1 4.42-3.64zM4 12c0-.69.07-1.36.19-2h3.24c-.1.65-.16 1.31-.16 2s.06 1.35.16 2H4.19A7.94 7.94 0 0 1 4 12zm.07 4h3.02c.33 1.28.8 2.44 1.4 3.64A8.03 8.03 0 0 1 4.07 16zM12 20c-.7-.9-1.34-2.12-1.73-4h3.46c-.39 1.88-1.03 3.1-1.73 4zm3.51-.36c.6-1.2 1.07-2.36 1.4-3.64h3.02a8.03 8.03 0 0 1-4.42 3.64zM16.57 14c.1-.65.16-1.31.16-2s-.06-1.35-.16-2h3.24c.12.64.19 1.31.19 2s-.07 1.36-.19 2h-3.24zm-1.3-4c-.39-1.88-1.03-3.1-1.73-4s-1.34 2.12-1.73 4h3.46zm-5.54 0c.39-1.88 1.03-3.1 1.73-4s1.34 2.12 1.73 4H9.73zm0 4h3.46c-.39 1.88-1.03 3.1-1.73 4s-1.34-2.12-1.73-4z"/>
+         </svg>
+         www.GracianaTortillaFactory.com
+       </a>
+       </p>
+     </div>
+  `
+},
+
+  {
+    title: "Visit Us",
+    background: "url('https://i.postimg.cc/9f9Ztjsy/Brochure-HTML-Panel-Page-2.png') center/cover no-repeat",
+    content: `
+      <div class="locations">
+        <div class="location-card">
+          <h1>Sylmar<br/>Location</h1>
+          <p>
+            <a href="https://maps.app.goo.gl/GznKDzucmNwPy2wP8" target="_blank">12239 Foothill Blvd,</br>Sylmar, CA 91342</a><br/>
+            <a href="tel:+18188972079">(818) 897-2079</a>
+          </p>
+          <h3>Hours</h3>
+          <p>
+            Monday - Saturday<br/>
+            6:00AM - 5:00PM
+          </p>
+        </div>
+
+        <div class="location-card">
+          <h1>Bakersfield<br/>Location</h1>
+          <p>
+            <a href="https://maps.app.goo.gl/5rD36bT492RHwwUG9" target="_blank">530 California Ave,</br>Bakersfield, CA 93304</a></br>
+            <a href="tel:+16613814722">(661) 381-4722</a>
+          </p>
+          <h3>Hours</h3>
+          <p>
+            Monday - Saturday<br/>
+            8:00AM - 5:00PM
+          </p>
+        </div>
+      </div>
+    `
+  },
+  {
+    title: "Spices & More",
+    background: "url('https://i.postimg.cc/tgFnnNV5/Brochure-HTML-Panel-Page-3.png') center/cover no-repeat",
+    content: `
+      <ul style="text-align:center;">(Sold by the Pound)</ul>
+      <h3>Chile (Peppers)</h3>
+      <ul>
+        <li>Arbol (Roasted or Regular)</li>
+        <li>Guajillo</li>
+        <li>Puya</li>
+        <li>California (Ground or Whole)</li>
+        <li>Mulato</li>
+        <li>Morita</li>
+        <li>Ancho</li>
+        <li>Nuevo Mexico</li>
+        <li>Japones</li>
+        <li>Pasilla</li>
+        <li>Ground Cayenne</li>
+        <li>Red Pepper Flakes</li>
+      </ul>
+      <h3>Spices</h3>
+      <ul>
+        <li>Oregano</li>
+        <li>Chamomile</li>
+        <li>Whole Cloves</li>
+        <li>Ground White Pepper</li>
+        <li>Black Pepper (Whole or Ground)</li>
+        <li>Garlic Salt</li>
+        <li>Garlic Powder</li>
+        <li>Onion Powder</li>
+        <li>Almonds</li>
+        <li>Walnuts</li>
+        <li>Cumin (Whole or Ground)</li>
+        <li>Cinnamon (Whole or Ground</li>
+        <li>Paprika</li>
+        <li>Grated Coconut</li>
+        <li>Piloncillo</li>
+        <li>Achiote (Annatto)</li>
+        <li>Sesame Seeds</li>
+        <li>Pepita Seeds</li>
+        <li>Star Anise</li>
+        <li>Dried Shrimp (Ground or Whole)</li>
+        <li>Prunes</li>
+        <li>Raisins</li>
+        <li>Mejorana</li>
+        <li>Hibiscus</li>
+        <li>Tamarind</li>
+        <li>Bay Leaves</li>
+        <li>Corn Husk</li>
+        <li>Sprinkles</li>
+      </ul>
+      <h3>Snacks and Treats</h3>
+      <ul>
+        <li>Fava Beans with Lime</li>
+        <li>Fava Beans with Lime & Chilli</li>
+        <li>Salted Peanuts with Lime</li>
+        <li>Salted Peanuts with Lime and Chili (Habanero or Arbol)</li>
+        <li>Mangos with Chamoy</li>
+        <li>Garbanzos with Lime & Chili</li>
+        <li>Japanese Peanuts</li>
+        <li>Chicharones (Pork Rinds)</li>
+        <li>Pasta Rueda/Dura (Wheel Chips)</li>
+      </ul>
+     <h3>Dry Grains</h3>
+      <ul>
+        <li>Long Grain Rice</li>
+        <li>Pinto Beans</li>
+        <li>Lentils</li>
+      </ul>
+    `
+  },
+  {
+    title: "Flour Products",
+    background: "url('https://i.postimg.cc/jj3rRGMn/Brochure-HTML-Panel-Page-4.png') center/cover no-repeat",
+    content: `
+      <h3> Regular Flour Tortillas</h3>
+      <ul>
+        <li>6" Snack Size</li>
+        <li>8" Gordita size</li>
+        <li>10" Medium Size</li>
+        <li>12" Burrito Size</li>
+        <li>13" Burrito Size</li>
+        <li>14" Burrito Size</li>
+      </ul>
+
+      <h3>Specialty Flour Tortillas</h3>
+        <ul>
+        <li>Sonora Style</li>
+        <li>Wheat</li>
+        <li>Tomato</li>
+        <li>Spinach</li>
+        <li>Garlic & Herb</li>
+        <li>Chipotle</li>
+        <li>Curry</li>
+        <li>Charcoal</li>
+        <li>Achiote</li>
+        </ul>
+    `
+  },
+  {
+    title: "Corn Products",
+    background: "url('https://i.postimg.cc/mrGTXpQd/p6-quickfix.png') center/cover no-repeat",
+    content: `
+      <h3>Corn Masa</h3>
+      <ul>
+        <li>White</li>
+        <li>Yellow</li>
+        <li>Blue</li>
+        <li>Prepared for Tamales</li>
+        <li>Unprepared for Tamales</li>
+      </ul>
+      <ul style="text-align:center;">Sold in 5 lbs./10 lbs./25 lbs.</ul>
+      <h3>Regular Tortillas</h3>
+      <ul>
+        <li>6" Corn 3dz "Family Pack"</li>
+        <li>6" Corn 5dz.</li>
+        <li>6" Corn 90ct "Fiesta Pack"</li>
+        <li>10" Corn 1dz.</li>
+        </ul>
+      <h3>Special Tortilla for Enchiladas</h3>
+      <ul>
+        <li>6 1/2" "Enchilada" 5dz. 67.5oz.</li>
+        <li>6 1/2" "Enchilada Pesada" 90oz.</li>
+      </ul>
+      <h3>Taco Sizes</h3>
+      <ul>
+        <li>4" Mini 5dz.</li>
+        <li>4 1/4" Mini 5dz.</li>
+        <li>4 1/2" Mini 5dz.</li>
+        <li>5" Mini 5dz</li>
+        <li>5 1/2" Mini 5dz.</li>
+      </ul>
+      <h3>Tortilla for Chips</h3>
+      <ul>
+        <li>6" Chip Tortilla 10dz. 70oz.</li>
+        <li>6" Chip Tortilla "Pesada" 10dz. 90oz.</li>
+        <li>6" Red/Blue/Green Chip Tortilla 5dz. 35oz.</li>
+        <li>25 lbs. Box of Pre-Cut Chips (4 or 6 Cut)</li>
+        <li>40 lbs. Box of Pre-Cut Chips (4 or 6 Cut)</br>*Also offered in assorted colors</li>
+      </ul>
+      <ul style="text-align:center;">All corn tortilla is offered in white or yellow corn.</ul>
+    `
+  },
+  {
+    title: "Tamales & More",
+    background: "url('https://i.postimg.cc/przNYyRK/Brochure-HTML-Panel-Page-6.png') center/cover no-repeat",
+    content: `
+      <h3>Tamales (by the dozen)</h3>
+      <ul>
+        <li>Beef</li>
+        <li>Chicken</li>
+        <li>Pork</li>
+        <li>Cheese</li>
+        <li>Sweet</li>
+        <li>Veggie</li>
+        <li>Assorted (3 of each: Beef, Chicken, Pork, and Cheese)</li>
+      </ul>
+      <h3>Salsas & Dressings</h3>
+      <ul>
+        <li>Red Habanero Salsa (4oz. or 1 gal.)</li>
+        <li>Green Salsa (4oz. or 1 gal.)</li>
+        <li>Cilantro Pepita Dressing</li>
+        <li>Thousand Island Sauce</li>
+        <li>Caesar Salad Dressing</li>
+        <li>Italian Dressing</li>
+        <li>Blue Cheese Dressing</li>
+      </ul>
+      <h3>Other Products</h3>
+      <ul>
+        <li>Chiles Rellenos (1dz.)</li>
+        <li>Telera Bread</li>
+        <li>Hamburger Bread</li>
+        <li>Sopes</li>
+        <li>Tostadas Caseras</li>
+        <li>1 lbs. Packet of Cooked Chips</li>
+        <li>10 lbs. Box of Cooked Chips</li>
+      </ul>
+      <ul style="text-align:center;">*Tamales and Chiles Rellenos are sold frozen unless ordered in advance.</ul>
+    `
+  }
+];
+
+const wrapper = document.getElementById('brochureWrapper');
+let currentIndex = 3;
+
+function createPanel(panelData) {
+  const div = document.createElement('div');
+  div.className = 'panel';
+  div.style.background = panelData.background;
+
+div.innerHTML = `
+  <div class="panel-overlay"></div>
+  <div class="panel-scroll-wrapper">
+    <div class="panel-content">
+      <h2>${panelData.title}</h2>
+      ${panelData.content}
+    </div>
+    <div class="panel-fade"></div>
+  </div>
+`;
+
+  return div;
+}
+
+
+function setupCarousel() {
+  wrapper.innerHTML = '';
+  const panelsToRender = [];
+
+  const clonesBefore = originalPanels.slice(-3).map(createPanel);
+  const realPanels = originalPanels.map(createPanel);
+  const clonesAfter = originalPanels.slice(0, 3).map(createPanel);
+
+  panelsToRender.push(...clonesBefore, ...realPanels, ...clonesAfter);
+  panelsToRender.forEach(panel => wrapper.appendChild(panel));
+
+  updateTransform();
+}
+
+function updateTransform() {
+  const panel = wrapper.querySelector('.panel');
+  if (!panel) return;
+  const panelWidth = panel.offsetWidth;
+  wrapper.style.transform = `translateX(-${currentIndex * panelWidth}px)`;
+}
+
+function scrollToNext() {
+  const totalPanels = wrapper.children.length;
+  currentIndex++;
+  updateTransform();
+
+  if (currentIndex === totalPanels - 3) {
+    setTimeout(() => {
+      currentIndex = 3;
+      wrapper.style.transition = 'none';
+      updateTransform();
+      wrapper.offsetHeight;
+      wrapper.style.transition = 'transform 0.4s ease-in-out';
+    }, 400);
+  }
+}
+
+function scrollToPrevious() {
+  currentIndex--;
+  updateTransform();
+
+  if (currentIndex === 2) {	
+    setTimeout(() => {
+      currentIndex = originalPanels.length + 2;
+      wrapper.style.transition = 'none';
+      updateTransform();
+      wrapper.offsetHeight;
+      wrapper.style.transition = 'transform 0.4s ease-in-out';
+    }, 400);
+  }
+}
+
+window.addEventListener('resize', updateTransform);
+window.addEventListener('load', () => {
+  setupCarousel();
+  updateTransform();
+});
+</script>
+
+</body>
+</html>
