@@ -119,7 +119,7 @@
     }
 
     .panel-logo {
-     width: 75%;
+     max-width: 100%;
      height: auto;
      display: block;
      margin: 0 auto;
@@ -252,19 +252,24 @@
      }
 
     @media (min-width: 1024px) {
-    .panel {
-      flex: 0 0 33.333vw;
-      width: 33.333vw;
-      }
-      }
+      .panel {
+        flex: 0 0 33.333vw;
+        width: 33.333vw;
+         }
+       }
 
-      .locations {
-        flex-wrap: nowrap;
-      }
+    @media (min-width: 1024px) {
+       .locations {
+         justify-content: center;
+         flex-wrap: nowrap;
+         gap: 2rem;
+       }
 
-      .location-card {
-        flex: 0 0 auto;
-      }
+       .location-card {
+         flex: 0 1 45%;
+         max-width: 400px;
+       }
+     }
 
    a {
      color: var(--accent);
@@ -321,7 +326,6 @@ const originalPanels = [
     <img src="https://files.catbox.moe/rr608r.png" alt="Graciana Tortilla Logo" class="panel-logo" />
      <div class="social-links">
       <p>
-<br/>
       <br/>
         <a href="https://www.facebook.com/GracianaTortillaFactory" target="_blank">
           <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
@@ -329,7 +333,6 @@ const originalPanels = [
           </svg>
           GracianaTortillaFactory
         </a>
-<br/>
       <br/>
         <a href="https://www.instagram.com/GracianaTortillaFactory" target="_blank">
           <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
@@ -337,7 +340,6 @@ const originalPanels = [
           </svg>
           GracianaTortillaFactory
         </a>
-<br/>
       <br/>
        <a href="https://www.gracianatortillafactory.com" target="_blank">
          <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
